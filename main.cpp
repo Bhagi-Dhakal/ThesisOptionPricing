@@ -1,16 +1,20 @@
 #include<iostream>
-
+#include "BlackScholes.hpp"
 
 
 int main() {
-    if (__cplusplus == 202302L) std::cout << "C++23";
-    else if (__cplusplus == 202002L) std::cout << "C++20";
-    else if (__cplusplus == 201703L) std::cout << "C++17";
-    else if (__cplusplus == 201402L) std::cout << "C++14";
-    else if (__cplusplus == 201103L) std::cout << "C++11";
-    else if (__cplusplus == 199711L) std::cout << "C++98";
-    else std::cout << "pre-standard C++ or unknown version: " << __cplusplus;
-    std::cout << "\n";
+    double r = .0386;
+    double delta = 0.0;
+    double sigma = .1675;
+    double S = 660.0;
+    double K = 600.0;
+    double T = 1.0;
+    double t = 0;
+
+    BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
+    double price = bs.price();
+
+    std::cout << "Black-Scholes Price: " << price << std::endl;
     return 0;
 }
 
