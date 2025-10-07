@@ -1,0 +1,13 @@
+# Ignores all these Files
+
+# Build files 
+*.o
+option_pricing
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+
+# Ignore editor configs
+.vscode/
+.idea/
