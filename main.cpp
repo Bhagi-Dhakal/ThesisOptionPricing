@@ -1,6 +1,6 @@
 #include<iostream>
 #include "BlackScholes.hpp"
-
+#include "BinomialTreeModel.hpp"
 
 int main() {
     double r = .0386;
@@ -12,9 +12,13 @@ int main() {
     double t = 0;
 
     BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
-    double price = bs.price();
+    double bsprice = bs.price();
+    std::cout << "Black-Scholes Price: " << bsprice << std::endl;
 
-    std::cout << "Black-Scholes Price: " << price << std::endl;
+    BinomialTreeModel bt(S, K, r, sigma, T, delta, OptionType::Put, 10000);
+    double btprice = bt.price();
+    std::cout << "Binomial Tree Price: " << btprice << std::endl;
+
     return 0;
 }
 
