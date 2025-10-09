@@ -1,6 +1,6 @@
 #include "BinomialTreeModel.hpp"
 #include <cmath>
-#include<iostream>
+#include <iostream>
 
 
 
@@ -23,7 +23,6 @@ double BinomialTreeModel::price() const {
     double price = 0.0;
 
     double t = T / steps; // steps = n
-    std::cout << "t: " << t << " T: " << T << std::endl;
     double discount = exp(-r * T);
     //double forwardPrice = S * exp((r - delta) * t);
     double u = exp(sigma * sqrt(t));

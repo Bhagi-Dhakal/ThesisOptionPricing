@@ -1,6 +1,8 @@
 #include<iostream>
 #include "BlackScholes.hpp"
 #include "BinomialTreeModel.hpp"
+#include "MonteCarloSim.hpp"
+
 
 int main() {
     double r = .0386;
@@ -11,6 +13,7 @@ int main() {
     double T = 1.0;
     double t = 0;
 
+    std::cout << std::endl;
     BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
     double bsprice = bs.price();
     std::cout << "Black-Scholes Price: " << bsprice << std::endl;
@@ -18,6 +21,10 @@ int main() {
     BinomialTreeModel bt(S, K, r, sigma, T, delta, OptionType::Put, 10000);
     double btprice = bt.price();
     std::cout << "Binomial Tree Price: " << btprice << std::endl;
+
+    MonteCarloSim mc(S, K, r, sigma, T, delta, OptionType::Put, 10000);
+    double mcprice = mc.price();
+    std::cout << "Monte Carlo Sim Price: " << mcprice << std::endl;
 
     return 0;
 }

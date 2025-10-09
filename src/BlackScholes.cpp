@@ -1,6 +1,6 @@
 #include "BlackScholes.hpp"
 #include <cmath>
-#include<iostream>
+#include <iostream>
 
 
 // Not Exactly CDF, but approximation of the CDF using Error Function
@@ -14,9 +14,9 @@ BlackScholes::BlackScholes(double S, double K, double r, double sigma, double T,
 }
 double BlackScholes::price() const {
     double d1 = (std::log(S / K) + (r - delta + (sigma * sigma) * 0.5) * (T - t)) / sigma * sqrt(T - t);
-    std::cout << "d1: " << d1 << std::endl;
+    // std::cout << "d1: " << d1 << std::endl;
     double d2 = (std::log(S / K) + (r - delta - (sigma * sigma) * 0.5) * (T - t)) / sigma * sqrt(T - t);
-    std::cout << "d2: " << d2 << std::endl;
+    // std::cout << "d2: " << d2 << std::endl;
 
     if (type == OptionType::Call) {
         double callPrice = S * std::exp(-delta * (T - t)) * norm_cdf(d1) - K * std::exp(-r * (T - t)) * norm_cdf(d2);
