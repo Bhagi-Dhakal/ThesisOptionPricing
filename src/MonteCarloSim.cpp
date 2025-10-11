@@ -14,7 +14,7 @@ MonteCarloSim::MonteCarloSim
 {
 }
 
-double MonteCarloSim::price() const {
+double MonteCarloSim::calculatePrice() const {
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, 1.0);
 
@@ -32,7 +32,29 @@ double MonteCarloSim::price() const {
 
         sum += payoff;
     }
+    return presentValue * (sum / simulationNum);
+}
 
-    return sum / simulationNum;
+double MonteCarloSim::calculateDelta() const {
+    return 0.0;
+}
 
+double MonteCarloSim::calculateGamma() const {
+    return 1.0;
+}
+
+double MonteCarloSim::calculateTheta() const {
+    return 0.0;
+}
+
+double MonteCarloSim::calculateVega() const {
+    return 0.0;
+}
+
+double MonteCarloSim::calculateRho() const {
+    return 0.0;
+}
+
+double MonteCarloSim::calculatePsi() const {
+    return 0.0;
 }

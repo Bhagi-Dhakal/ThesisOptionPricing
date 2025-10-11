@@ -14,7 +14,7 @@ double BinomialTreeModel::logCombination(int n, int k) const {
     return std::lgamma(n + 1) - std::lgamma(k + 1) - std::lgamma(n - k + 1);
 }
 
-double BinomialTreeModel::price() const {
+double BinomialTreeModel::calculatePrice() const {
     /*
         Binomial Tree Model Formmula:
         C(S,K) = e^(rnt) * sum(k = 0, n: ([combnations(n,k)]  * (p*)^k * (1-p*)^(n-k) * max{u^k * d^(n-k) * S - K, 0})
@@ -55,4 +55,28 @@ double BinomialTreeModel::price() const {
     }
     price *= discount;
     return price;
+}
+
+double BinomialTreeModel::calculateDelta() const {
+    return 0.0;
+}
+
+double BinomialTreeModel::calculateGamma() const {
+    return 0.0;
+}
+
+double BinomialTreeModel::calculateTheta() const {
+    return 0.0;
+}
+
+double BinomialTreeModel::calculateVega() const {
+    return 0.0;
+}
+
+double BinomialTreeModel::calculateRho() const {
+    return 0.0;
+}
+
+double BinomialTreeModel::calculatePsi() const {
+    return 0.0;
 }

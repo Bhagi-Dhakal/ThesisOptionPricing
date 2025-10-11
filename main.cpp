@@ -15,15 +15,15 @@ int main() {
 
     std::cout << std::endl;
     BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
-    double bsprice = bs.price();
+    double bsprice = bs.calculatePrice();
     std::cout << "Black-Scholes Price: " << bsprice << std::endl;
 
     BinomialTreeModel bt(S, K, r, sigma, T, delta, OptionType::Put, 10000);
-    double btprice = bt.price();
+    double btprice = bt.calculatePrice();
     std::cout << "Binomial Tree Price: " << btprice << std::endl;
 
     MonteCarloSim mc(S, K, r, sigma, T, delta, OptionType::Put, 10000);
-    double mcprice = mc.price();
+    double mcprice = mc.calculatePrice();
     std::cout << "Monte Carlo Sim Price: " << mcprice << std::endl;
 
     return 0;
