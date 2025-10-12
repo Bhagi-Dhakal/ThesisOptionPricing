@@ -1,10 +1,11 @@
 #include "BlackScholes.hpp"
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 
 
 // Not Exactly CDF, but approximation of the CDF using Error Function
-static double norm_cdf(double x) {
+static double NormalCDF(double x) {
     return 0.5 * std::erfc(-x / std::sqrt(2));
 }
 
@@ -28,12 +29,12 @@ double BlackScholes::calculatePrice() const {
     double d2 = calculateD2();
 
     if (type == OptionType::Call) {
-        double callPrice = S * std::exp(-delta * (T - t)) * norm_cdf(d1) - K * std::exp(-r * (T - t)) * norm_cdf(d2);
+        double callPrice = S * std::exp(-delta * (T - t)) * NormalCDF(d1) - K * std::exp(-r * (T - t)) * NormalCDF(d2);
         return callPrice;
     }
     else if (type == OptionType::Put)
     {
-        double putPrice = K * std::exp(-r * (T - t)) * norm_cdf(-d2) - S * std::exp(-delta * (T - t)) * norm_cdf(-d1);
+        double putPrice = K * std::exp(-r * (T - t)) * NormalCDF(-d2) - S * std::exp(-delta * (T - t)) * NormalCDF(-d1);
         return putPrice;
     }
 
@@ -41,25 +42,74 @@ double BlackScholes::calculatePrice() const {
 }
 
 double BlackScholes::calculateDelta() const {
-    return 0.0;
+
+    double optionDelta = (type == OptionType::Call)
+        ? exp(-delta * (T - t)) * NormalCDF(calculateD1())
+        : -exp(-delta * (T - t)) * NormalCDF(-1 * calculateD1());
+
+    return optionDelta;
 }
 
 double BlackScholes::calculateGamma() const {
-    return 0.0;
+    // Gamma is same for both Call and Put
+    double optionGamma = (exp(-delta * (T - t)) * NormalCDF(calculateD1())) / (sigma * S * sqrt(T - t));
+    return optionGamma;
 }
 
 double BlackScholes::calculateTheta() const {
-    return 0.0;
+    // Little messy, its a long equation so I just brok it down into reusable parts
+    double a = S * exp(-delta * (T - t));
+    double b = (sigma * NormalCDF(calculateD1())) / (2 * sqrt(T - t));
+    double c = r * K * exp(-r * (T - t));
+
+    double optionRow = (type == OptionType::Call)
+        ? a * (S * NormalCDF(calculateD1()) - b) - c * NormalCDF(calculateD2())
+        : c * NormalCDF(-calculateD2()) - (S * NormalCDF(-calculateD1()) - b);
+    return optionRow;
 }
 
 double BlackScholes::calculateVega() const {
-    return 0.0;
+    // Vega is same for both Call and Put
+    double optionVega = S * exp(-delta * (T - t)) * NormalCDF(calculateD1()) * sqrt(T - t);
+    return optionVega;
 }
 
 double BlackScholes::calculateRho() const {
-    return 0.0;
+    double optionRho = (type == OptionType::Call)
+        ? K * (T - t) * exp(-r * (T - t)) * NormalCDF(calculateD2())
+        : -K * (T - t) * exp(-r * (T - t)) * NormalCDF(-1 * calculateD2());
+    return optionRho;
 }
 
 double BlackScholes::calculatePsi() const {
-    return 0.0;
+    double optionPsi = (type == OptionType::Call)
+        ? -(T - t) * S * exp(-delta * (T - t)) * NormalCDF(calculateD1())
+        : (T - t) * S * exp(-delta * (T - t)) * NormalCDF(-1 * calculateD1());
+    return optionPsi;
+}
+
+void BlackScholes::printOptionSummary() const {
+    std::cout << std::fixed << std::setprecision(4); // 
+    std::cout << "----------------------------------------\n";
+    std::cout << "EUROPEAN OPTION SUMMARY\n";
+    std::cout << "----------------------------------------\n";
+    std::cout << "Type: " << (type == OptionType::Call ? "Call" : "Put") << "\n";
+    std::cout << "Spot Price (S): " << S << "\n";
+    std::cout << "Strike Price (K): " << K << "\n";
+    std::cout << "Risk-Free Rate (r): " << r << "\n";
+    std::cout << "Volatility (sigma): " << sigma << "\n";
+    std::cout << "Time to Maturity (T): " << T << "\n";
+    std::cout << "Continous Dividend Yield (delta): " << delta << "\n";
+    std::cout << "Current Time (t): " << t << "\n";
+    std::cout << "----------------------------------------\n";
+    std::cout << "OPTION VALUE & GREEKS\n";
+    std::cout << "----------------------------------------\n";
+    std::cout << "Value: " << calculatePrice() << "\n";
+    std::cout << "Delta: " << calculateDelta() << "\n";
+    std::cout << "Gamma: " << calculateGamma() << "\n";
+    std::cout << "Theta:  " << calculateTheta() << "\n";
+    std::cout << "Vega: " << calculateVega() << "\n";
+    std::cout << "Rho:   " << calculateRho() << "\n";
+    std::cout << "Psi:   " << calculatePsi() << "\n";
+    std::cout << "----------------------------------------\n";
 }

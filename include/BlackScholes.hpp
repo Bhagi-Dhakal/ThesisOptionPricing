@@ -7,17 +7,19 @@ public:
 
     double calculatePrice() const override; // overides the function from the options object
 
-private:
-    // Method to calculate D1, D1
-    double calculateD1() const;
-    double calculateD2() const;
-
     // Methods to calculate the Greeks
-    double calculateDelta() const override;
+    double calculateDelta() const override; // Return the Options Delta 
     double calculateGamma() const override;
     double calculateTheta() const override;
     double calculateVega()  const override;
     double calculateRho()   const override;
     double calculatePsi()   const override;
+
+    void printOptionSummary() const; // Prints Summary of the option
+
+private:
+    // Method to calculate D1, D1
+    double calculateD1() const;
+    double calculateD2() const;
 };
 

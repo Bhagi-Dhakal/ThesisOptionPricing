@@ -15,8 +15,8 @@ int main() {
 
     std::cout << std::endl;
     BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
-    double bsprice = bs.calculatePrice();
-    std::cout << "Black-Scholes Price: " << bsprice << std::endl;
+    // double bsprice = bs.calculatePrice();
+    // std::cout << "Black-Scholes Price: " << bsprice << std::endl;
 
     BinomialTreeModel bt(S, K, r, sigma, T, delta, OptionType::Put, 10000);
     double btprice = bt.calculatePrice();
@@ -25,6 +25,8 @@ int main() {
     MonteCarloSim mc(S, K, r, sigma, T, delta, OptionType::Put, 10000);
     double mcprice = mc.calculatePrice();
     std::cout << "Monte Carlo Sim Price: " << mcprice << std::endl;
+
+    bs.printOptionSummary();
 
     return 0;
 }
