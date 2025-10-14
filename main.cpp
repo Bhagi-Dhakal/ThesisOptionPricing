@@ -6,7 +6,7 @@
 
 int main() {
     double r = .0386;
-    double delta = 0.0;
+    double delta = 0.021;
     double sigma = .1675;
     double S = 660.0;
     double K = 600.0;
@@ -15,18 +15,13 @@ int main() {
 
     std::cout << std::endl;
     BlackScholes bs(S, K, r, sigma, T, delta, OptionType::Put, t);
-    // double bsprice = bs.calculatePrice();
-    // std::cout << "Black-Scholes Price: " << bsprice << std::endl;
 
     BinomialTreeModel bt(S, K, r, sigma, T, delta, OptionType::Put, 10000);
-    double btprice = bt.calculatePrice();
-    std::cout << "Binomial Tree Price: " << btprice << std::endl;
 
-    MonteCarloSim mc(S, K, r, sigma, T, delta, OptionType::Put, 10000);
-    double mcprice = mc.calculatePrice();
-    std::cout << "Monte Carlo Sim Price: " << mcprice << std::endl;
+    //MonteCarloSim mc(S, K, r, sigma, T, delta, OptionType::Put, 10000);
 
     bs.printOptionSummary();
+    bt.printOptionSummary();
 
     return 0;
 }

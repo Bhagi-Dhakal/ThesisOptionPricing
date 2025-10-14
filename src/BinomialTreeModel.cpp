@@ -1,7 +1,7 @@
 #include "BinomialTreeModel.hpp"
 #include <cmath>
 #include <iostream>
-
+#include <iomanip>
 
 
 BinomialTreeModel::BinomialTreeModel
@@ -58,25 +58,79 @@ double BinomialTreeModel::calculatePrice() const {
 }
 
 double BinomialTreeModel::calculateDelta() const {
-    return 0.0;
+    // Using the First order Central Finite Difference Formula for Delta
+    double dS = S * 0.005; // 0.5% of current Stock Price
+    double upPrice = BinomialTreeModel(S + dS, K, r, sigma, T, delta, type, steps).calculatePrice();
+    double downPrice = BinomialTreeModel(S - dS, K, r, sigma, T, delta, type, steps).calculatePrice();
+    double optionDelta = (upPrice - downPrice) / (2 * dS);
+    return optionDelta;
 }
 
 double BinomialTreeModel::calculateGamma() const {
-    return 0.0;
+    // Using the Second order Central Finite Difference Formula for Delta
+    double dS = S * 0.005; // 0.5% of current Stock Price
+    double upPrice = BinomialTreeModel(S + dS, K, r, sigma, T, delta, type, steps).calculatePrice();
+    double currentPrice = calculatePrice();
+    double downPrice = BinomialTreeModel(S - dS, K, r, sigma, T, delta, type, steps).calculatePrice();
+    double optionGamma = (upPrice - 2 * currentPrice + downPrice) / (dS * dS);
+    return optionGamma;
 }
 
 double BinomialTreeModel::calculateTheta() const {
-    return 0.0;
+    double dT = 1.0 / 365.0; // Change by 1 day
+    double upPrice = BinomialTreeModel(S, K, r, sigma, T + dT, delta, type, steps).calculatePrice();
+    double downPrice = BinomialTreeModel(S, K, r, sigma, T - dT, delta, type, steps).calculatePrice();
+    double optionTheta = (upPrice - downPrice) / (2 * dT);
+    return optionTheta;
 }
 
 double BinomialTreeModel::calculateVega() const {
-    return 0.0;
+    double dSigma = sigma * 0.005; // 0.5%  of current sigma
+    double upPrice = BinomialTreeModel(S, K, r, sigma + dSigma, T, delta, type, steps).calculatePrice();
+    double downPrice = BinomialTreeModel(S, K, r, sigma - dSigma, T, delta, type, steps).calculatePrice();
+    double optionVega = (upPrice - downPrice) / (2 * dSigma);
+    return optionVega;
 }
 
 double BinomialTreeModel::calculateRho() const {
-    return 0.0;
+    double dr = r * 0.005; // 0.5%  of current r
+    double upPrice = BinomialTreeModel(S, K, r + dr, sigma, T, delta, type, steps).calculatePrice();
+    double downPrice = BinomialTreeModel(S, K, r - dr, sigma, T, delta, type, steps).calculatePrice();
+    double optionRho = (upPrice - downPrice) / (2 * dr);
+    return optionRho;
 }
 
 double BinomialTreeModel::calculatePsi() const {
-    return 0.0;
+    double ddelta = delta * 0.005; // 0.5%  of current delta
+    double upPrice = BinomialTreeModel(S, K, r, sigma, T, delta + ddelta, type, steps).calculatePrice();
+    double downPrice = BinomialTreeModel(S, K, r, sigma, T, delta - ddelta, type, steps).calculatePrice();
+    double optionPsi = (upPrice - downPrice) / (2 * ddelta);
+    return optionPsi;
+}
+
+
+void BinomialTreeModel::printOptionSummary() const {
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "----------------------------------------------\n";
+    std::cout << "BINOMIAL TREE MODEL EUROPEAN OPTION SUMMARY\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "Type: " << (type == OptionType::Call ? "Call" : "Put") << "\n";
+    std::cout << "Spot Price (S): " << S << "\n";
+    std::cout << "Strike Price (K): " << K << "\n";
+    std::cout << "Risk-Free Rate (r): " << r << "\n";
+    std::cout << "Volatility (sigma): " << sigma << "\n";
+    std::cout << "Time to Maturity (T): " << T << "\n";
+    std::cout << "Continous Dividend Yield (delta): " << delta << "\n";
+    std::cout << "Number of time Steps (steps): " << steps << "\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "OPTION VALUE & GREEKS\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "Value: " << calculatePrice() << "\n";
+    std::cout << "Delta: " << calculateDelta() << "\n";
+    std::cout << "Gamma: " << calculateGamma() << "\n";
+    std::cout << "Theta:  " << calculateTheta() << "\n";
+    std::cout << "Vega: " << calculateVega() << "\n";
+    std::cout << "Rho:   " << calculateRho() << "\n";
+    std::cout << "Psi:   " << calculatePsi() << "\n";
+    std::cout << "----------------------------------------\n";
 }
