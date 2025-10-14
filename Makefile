@@ -9,7 +9,7 @@ OBJ_DIR = obj
 BIN = option_pricing
 
 # Automatically find source files
-SRCS := $(wildcard $(SRC_DIR)/*.cpp) main.cpp
+SRCS := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
 # Default rule

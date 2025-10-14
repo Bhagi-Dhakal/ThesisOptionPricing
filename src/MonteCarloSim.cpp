@@ -1,9 +1,8 @@
 #include "MonteCarloSim.hpp"
 #include <iostream>
 #include <cmath>
-#include <vector> 
+#include <iomanip>
 #include <random>
-
 
 
 
@@ -36,25 +35,76 @@ double MonteCarloSim::calculatePrice() const {
 }
 
 double MonteCarloSim::calculateDelta() const {
-    return 0.0;
+    double dS = S * 0.005; // 0.5% of current Stock Price
+    double upPrice = MonteCarloSim(S + dS, K, r, sigma, T, delta, type, simulationNum).calculatePrice();
+    double downPrice = MonteCarloSim(S - dS, K, r, sigma, T, delta, type, simulationNum).calculatePrice();
+    double optionDelta = (upPrice - downPrice) / (2 * dS);
+    return optionDelta;
 }
 
 double MonteCarloSim::calculateGamma() const {
-    return 1.0;
+    double dS = S * 0.005; // 0.5% of current Stock Price
+    double upPrice = MonteCarloSim(S + dS, K, r, sigma, T, delta, type, simulationNum).calculatePrice();
+    double currentPrice = calculatePrice();
+    double downPrice = MonteCarloSim(S - dS, K, r, sigma, T, delta, type, simulationNum).calculatePrice();
+    double optionGamma = (upPrice - 2 * currentPrice + downPrice) / (dS * dS);
+    return optionGamma;
 }
 
 double MonteCarloSim::calculateTheta() const {
-    return 0.0;
+    double dT = 1.0 / 365.0; // Change by 1 day
+    double upPrice = MonteCarloSim(S, K, r, sigma, T + dT, delta, type, simulationNum).calculatePrice();
+    double downPrice = MonteCarloSim(S, K, r, sigma, T - dT, delta, type, simulationNum).calculatePrice();
+    double optionTheta = (upPrice - downPrice) / (2 * dT);
+    return optionTheta;
 }
 
 double MonteCarloSim::calculateVega() const {
-    return 0.0;
+    double dSigma = sigma * 0.005; // 0.5%  of current sigma
+    double upPrice = MonteCarloSim(S, K, r, sigma + dSigma, T, delta, type, simulationNum).calculatePrice();
+    double downPrice = MonteCarloSim(S, K, r, sigma - dSigma, T, delta, type, simulationNum).calculatePrice();
+    double optionVega = (upPrice - downPrice) / (2 * dSigma);
+    return optionVega;
 }
 
 double MonteCarloSim::calculateRho() const {
-    return 0.0;
+    double dr = r * 0.005; // 0.5%  of current r
+    double upPrice = MonteCarloSim(S, K, r + dr, sigma, T, delta, type, simulationNum).calculatePrice();
+    double downPrice = MonteCarloSim(S, K, r - dr, sigma, T, delta, type, simulationNum).calculatePrice();
+    double optionRho = (upPrice - downPrice) / (2 * dr);
+    return optionRho;
 }
 
 double MonteCarloSim::calculatePsi() const {
-    return 0.0;
+    double ddelta = delta * 0.005; // 0.5%  of current delta
+    double upPrice = MonteCarloSim(S, K, r, sigma, T, delta + ddelta, type, simulationNum).calculatePrice();
+    double downPrice = MonteCarloSim(S, K, r, sigma, T, delta - ddelta, type, simulationNum).calculatePrice();
+    double optionPsi = (upPrice - downPrice) / (2 * ddelta);
+    return optionPsi;
+}
+
+void MonteCarloSim::printOptionSummary() const {
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "----------------------------------------------\n";
+    std::cout << "MONTE CARLO SIM EUROPEAN OPTION SUMMARY\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "Type: " << (type == OptionType::Call ? "Call" : "Put") << "\n";
+    std::cout << "Spot Price (S): " << S << "\n";
+    std::cout << "Strike Price (K): " << K << "\n";
+    std::cout << "Risk-Free Rate (r): " << r << "\n";
+    std::cout << "Volatility (sigma): " << sigma << "\n";
+    std::cout << "Time to Maturity (T): " << T << "\n";
+    std::cout << "Continous Dividend Yield (delta): " << delta << "\n";
+    std::cout << "Number of Simulations (n): " << simulationNum << "\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "OPTION VALUE & GREEKS\n";
+    std::cout << "----------------------------------------------\n";
+    std::cout << "Value: " << calculatePrice() << "\n";
+    std::cout << "Delta: " << calculateDelta() << "\n";
+    std::cout << "Gamma: " << calculateGamma() << "\n";
+    std::cout << "Theta:  " << calculateTheta() << "\n";
+    std::cout << "Vega: " << calculateVega() << "\n";
+    std::cout << "Rho:   " << calculateRho() << "\n";
+    std::cout << "Psi:   " << calculatePsi() << "\n";
+    std::cout << "----------------------------------------\n";
 }
